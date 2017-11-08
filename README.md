@@ -1,2 +1,9 @@
 # crypto
-A small php library for encryption
+
+Provides cryptographic functionality
+
+# Installation
+
+```bash
+php composer.phar require davahome/crypto
+```

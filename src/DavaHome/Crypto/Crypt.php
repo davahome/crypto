@@ -1,22 +1,21 @@
 <?php
 
-namespace TheDava\Birthdays;
+namespace DavaHome\Crypto;
 
 class Crypt
 {
-    const ENCRYPTION_METHOD = 'AES-256-CBC';
+    const METHOD_AES256_CBC = 'AES-256-CBC';
 
-    /** @var Password */
+    /** @var string */
     protected $password;
 
-    public function __construct(Password $password)
+    /** @var string */
+    protected $encryptionMethod;
+
+    public function __construct($password, $encryptionMethod)
     {
         $this->password = $password;
-    }
-
-    protected function check()
-    {
-        $this->password->check();
+        $this->encryptionMethod = $encryptionMethod;
     }
 
     /**
@@ -24,9 +23,7 @@ class Crypt
      */
     protected function getKeyAndIv()
     {
-        $password = $this->password->getPassword();
-
-        list($rawKey, $rawIv) = explode('|', $password);
+        list($rawKey, $rawIv) = explode('|', $this->password);
 
         $key = hash('sha256', $rawKey);
 
@@ -76,11 +73,9 @@ class Crypt
      */
     public function encrypt($inputFile, $encryptedFile, $checksumFile)
     {
-        $this->check();
-
         $data = file_get_contents($inputFile);
         list($key, $iv) = $this->getKeyAndIv();
-        $result = openssl_encrypt($data, self::ENCRYPTION_METHOD, $key, 0, $iv);
+        $result = openssl_encrypt($data, $this->encryptionMethod, $key, 0, $iv);
 
         $this->safeWrite($checksumFile, md5_file($inputFile));
 
@@ -96,11 +91,9 @@ class Crypt
      */
     public function decrypt($encryptedFile, $outputFile, $checksumFile)
     {
-        $this->check();
-
         $data = file_get_contents($encryptedFile);
         list($key, $iv) = $this->getKeyAndIv();
-        $result = openssl_decrypt(base64_decode($data), self::ENCRYPTION_METHOD, $key, 0, $iv);
+        $result = openssl_decrypt(base64_decode($data), $this->encryptionMethod, $key, 0, $iv);
 
         $this->safeWrite($outputFile, $result);
 

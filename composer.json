@@ -1,0 +1,9 @@
+{
+    "name": "davahome/crypto",
+    "license": "gpl",
+    "autoload": {
+        "psr-4": {
+            "DavaHome\\Crypto\\": "src/DavaHome/Crypto/"
+        }
+    }
+}
