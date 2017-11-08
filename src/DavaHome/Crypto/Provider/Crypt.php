@@ -1,6 +1,6 @@
 <?php
 
-namespace DavaHome\Crypto;
+namespace DavaHome\Crypto\Provider;
 
 class Crypt
 {
